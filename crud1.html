@@ -1,0 +1,87 @@
+<html>
+    <head>
+        <script src="https://www.gstatic.com/firebasejs/8.4.1/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.4.1/firebase-database.js"></script>
+        <script>
+            var firebaseConfig = {
+                apiKey: "AIzaSyCtI92hLp3TWrFr_8VuwgimC4Ziwvj8TXs",
+                authDomain: "awt3-18f78.firebaseapp.com",
+                databaseURL: "https://awt3-18f78-default-rtdb.firebaseio.com",
+                projectId: "awt3-18f78",
+                storageBucket: "awt3-18f78.appspot.com",
+                messagingSenderId: "1027079856214",
+                appId: "1:1027079856214:web:9e710fa9c4e816fe191bf7",
+                measurementId: "G-3PN7KNQK73"
+            };
+            firebase.initializeApp(firebaseConfig);
+            
+            var dbrf=firebase.database().ref()
+            function insert()
+            {
+                var name,rollno;
+                name=document.getElementById('name').value;
+                rollno=document.getElementById('rollno').value;
+                dbrf.child(rollno).set({
+                    StudentName: name,
+                    RollNo: rollno,
+                })
+                document.getElementById("print").innerHTML = ""
+                console.log("Data inserted");
+            }
+
+            function deletedata()
+            {
+                var RollNo=window.prompt("Enter rollno to delete")
+                dbrf.child(RollNo).remove()
+                console.log("Data removed");
+                document.getElementById("print").innerHTML = ""
+            }
+
+            function updatedata()
+            {
+                var roll=document.getElementById("rollno").value;
+                var newname=document.getElementById("name").value;
+  
+                dbrf.child(roll).update({StudentName:newname})
+                console.log("Data updated");
+                document.getElementById("print").innerHTML = ""
+            }   
+            function studentsdata()
+            {
+
+                table = document.createElement("TABLE");
+                table.border = "1"
+                table.width = "500"
+                row = table.insertRow(0);
+                cell1 = row.insertCell(0)
+                cell2 = row.insertCell(1)
+                cell1.innerHTML = 'Name of student'
+                cell2.innerHTML = 'Roll No of student'        
+                dbrf.on("value",(snap)=>{
+                snap.forEach((data)=>{
+                    row = table.insertRow(-1);
+                    cell1 = row.insertCell(0)
+                    cell1.innerHTML = data.val().StudentName
+                    cell1 = row.insertCell(1)
+                    cell1.innerHTML = data.val().RollNo
+                })
+                })
+                document.getElementById("print").innerHTML = ""
+                document.getElementById("print").append(table);
+            }
+        </script>
+        
+    </head>
+    <body>
+        <center
+            <br><br>
+        Name <input id="name" type="text"></input> <br><br>
+       Rollnum <input id="rollno" type="text"></input> <br><br>
+       <button id="insert" onclick="insert()">INSERT</button>
+       <button id="delete" onclick="deletedata()">DELETE</button>
+       <button id="update" onclick="updatedata()">UPDATE</button>
+       <button id="getdata" onclick="studentsdata()">GET</button>
+       <div id="print"></div>
+    </center>
+    </body>
+</html>
